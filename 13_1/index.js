@@ -80,6 +80,32 @@ app.get('/api/blogs', async (req, res) => {
   
 })
 
+// DELETE API endpoint to delete a specific blog by its ID
+app.delete('/api/blogs/:id', async (req, res) => {
+  const blogId = req.params.id;
+
+  try {
+      // Use Sequelize to delete the blog based on the provided ID
+      const deletedBlogCount = await Blog.destroy({
+          where: {
+              id: blogId
+          }
+      });
+
+      if (deletedBlogCount === 1) {
+          // Blog successfully deleted
+          res.status(204).send(); // 204 No Content
+      } else {
+          // Blog with the provided ID not found
+          res.status(404).json({ error: 'Blog not found' });
+      }
+  } catch (error) {
+      // Error occurred while deleting the blog
+      console.error('Error deleting blog:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.post('/api/blogs', async (req, res) => {
     console.log(req.body)
     // Execute the named SQL query to insert a new blog
