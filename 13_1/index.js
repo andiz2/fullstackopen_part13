@@ -70,12 +70,14 @@ app.get('/api/blogs', async (req, res) => {
     })
     .then((blogs) => {
       console.log('All blogs:', blogs);
+      res.json(blogs)
     })
     .catch((error) => {
       console.error('Error selecting all blogs:', error);
+      res.status(500).json({ error: 'Internal server error' });
     })
   //const blogs = await Blog.findAll()
-  res.json(blogs)
+  
 })
 
 app.post('/api/blogs', async (req, res) => {
