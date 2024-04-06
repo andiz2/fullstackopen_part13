@@ -69,7 +69,7 @@ app.get('/api/blogs', async (req, res) => {
       model: Blog
     })
     .then((blogs) => {
-      console.log('All blogs:', blogs);
+      console.log('All blogs:', JSON.stringify(blogs, null, 2));
       res.json(blogs)
     })
     .catch((error) => {
@@ -77,8 +77,31 @@ app.get('/api/blogs', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     })
   //const blogs = await Blog.findAll()
-  
 })
+
+app.get('/api/blogs/:id', async (req, res) => {
+  const blog = await Blog.findByPk(req.params.id)
+  if (blog) {
+    console.log(blog.toJSON())
+    res.json(blog)
+  } else {
+    res.status(404).end()
+  }
+})
+
+app.put('/api/blogs/:id', async (req, res) => {
+  const blog = await Blog.findByPk(req.params.id)
+  if (blog) {
+    blog.likes = req.body.likes
+    blog.author = req.body.author
+    blog.title = req.body.title
+    await blog.save()
+    res.json(blog)
+  } else {
+    res.status(404).end()
+  }
+})
+
 
 // DELETE API endpoint to delete a specific blog by its ID
 app.delete('/api/blogs/:id', async (req, res) => {
